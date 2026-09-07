@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>All Are Beautiful | Lesson 6 Project</title>
+<style>
+  :root{
+    --bg-top:#d7f1ff;
+    --bg-mid:#c4ecff;
+    --bg-bottom:#dff7a3;
+    --paper:#ffffff;
+    --paper-2:#f8fbff;
+    --ink:#2e3552;
+    --muted:#6f7893;
+    --line:#dbe8f6;
+    --purple:#7f56ea;
+    --purple-2:#a681ff;
+    --blue:#2b9cf5;
+    --blue-2:#1f7fe8;
+    --green:#37b663;
+    --green-2:#22904a;
+    --yellow:#ffbf33;
+    --orange:#f59b1f;
+    --pink:#ff6aa6;
+    --pink-2:#ff8abc;
+    --shadow:0 16px 38px rgba(69,94,134,.14);
+    --radius:28px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    color:var(--ink);
+    font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","Segoe UI",Arial,sans-serif;
+    background:
+      radial-gradient(circle at 8% 10%, rgba(255,255,255,.95) 0 2.7%, transparent 2.8%),
+      radial-gradient(circle at 16% 8%, rgba(255,255,255,.95) 0 3.2%, transparent 3.3%),
+      radial-gradient(circle at 88% 15%, rgba(255,255,255,.95) 0 2.6%, transparent 2.7%),
+      linear-gradient(180deg,var(--bg-top) 0%, var(--bg-mid) 57%, #a2d76c 57.5%, var(--bg-bottom) 100%);
+    min-height:100vh;
+  }
+
+  .bg-cloud{
+    position:fixed; inset:auto;
+    opacity:.65; filter:blur(.2px);
+    pointer-events:none; z-index:0;
+  }
+  .cloud1{left:2%; top:14%; font-size:90px}
+  .cloud2{right:4%; top:23%; font-size:70px}
+  .cloud3{left:8%; bottom:18%; font-size:64px}
+
+  .app{
+    position:relative; z-index:1;
+    max-width:1460px;
+    margin:0 auto;
+    padding:18px 18px 34px;
+  }
+
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:18px;
+    margin-bottom:16px;
+  }
+
+  .header-left{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    min-width:0;
+  }
+
+  .lesson-badge{
+    background:linear-gradient(135deg,#9c74ff,#6d42d8);
+    color:#fff;
+    border-radius:34px;
+    padding:16px 18px;
+    min-width:144px;
+    box-shadow:var(--shadow);
+    position:relative;
+  }
+  .lesson-badge:before{
+    content:"✏️";
+    position:absolute;
+    left:-10px; top:18px;
+    background:#fff7de;
+    width:34px; height:34px; border-radius:50%;
+    display:grid; place-items:center;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+  }
+  .lesson-badge .small{
+    font-size:21px;
+    font-weight:900;
+    opacity:.96;
+  }
+  .lesson-badge .big{
+    font-size:26px;
+    font-weight:1000;
+    line-height:1.05;
+    color:#ffe56c;
+  }
+
+  .title-wrap{min-width:0}
+  .main-title{
+    margin:0;
+    font-size:clamp(36px,5vw,70px);
+    line-height:.95;
+    letter-spacing:-2px;
+    font-weight:1000;
+    text-shadow:0 2px 0 rgba(255,255,255,.7);
+  }
+  .main-title .t1{color:#ff617e}
+  .main-title .t2{color:#8fbf1f}
+  .main-title .t3{color:#1988e2}
+  .sub-title{
+    margin-top:10px;
+    font-size:20px;
+    font-weight:800;
+  }
+  .motto{
+    margin-top:8px;
+    color:#6c5ebf;
+    font-weight:900;
+    font-size:16px;
+  }
+
+  .header-right{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+  }
+
+  .top-btn{
+    border:0;
+    border-radius:999px;
+    padding:14px 18px;
+    font-weight:900;
+    font-size:17px;
+    color:#35527d;
+    background:rgba(255,255,255,.92);
+    box-shadow:var(--shadow);
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .avatar-bubble{
+    width:54px; height:54px; border-radius:50%;
+    background:linear-gradient(180deg,#fff,#ffe4ef);
+    box-shadow:var(--shadow);
+    display:grid; place-items:center;
+    font-size:30px;
+  }
+
+  .progress{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:4px 0 18px;
+  }
+
+  .progress button{
+    border:0;
+    border-radius:999px;
+    padding:11px 16px;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+    background:rgba(255,255,255,.95);
+    color:#6f7994;
+    box-shadow:0 8px 18px rgba(74,93,127,.09);
+  }
+  .progress button.active{
+    color:#fff;
+    background:linear-gradient(135deg,var(--purple),#6436d1);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:1.08fr .92fr;
+    gap:18px;
+  }
+
+  .card{
+    background:rgba(255,255,255,.97);
+    border:1px solid rgba(255,255,255,.95);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px;
+  }
+
+  .step-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+    flex-wrap:wrap;
+  }
+  .step-chip{
+    color:#fff;
+    font-weight:1000;
+    padding:9px 16px;
+    border-radius:19px;
+    font-size:26px;
+    line-height:1;
+  }
+  .chip-1{background:linear-gradient(135deg,#7f57ea,#a17cff)}
+  .chip-2{background:linear-gradient(135deg,#f2a11c,#ffc53d)}
+  .chip-3{background:linear-gradient(135deg,#38b75d,#66d071)}
+  .chip-4{background:linear-gradient(135deg,#f25f98,#ff8bb5)}
+  .step-header h2{
+    margin:0;
+    font-size:34px;
+    line-height:1;
+    letter-spacing:-1px;
+  }
+  .step-header p{
+    margin:4px 0 0;
+    color:var(--muted);
+    font-weight:800;
+  }
+
+  .soft-panel{
+    background:var(--paper-2);
+    border:2px solid #ebf2fb;
+    border-radius:24px;
+    padding:14px;
+  }
+
+  .character-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:12px;
+  }
+  .character-card,
+  .guess-card{
+    background:#eef8ff;
+    border:3px solid transparent;
+    border-radius:22px;
+    padding:10px;
+    cursor:pointer;
+    transition:.18s ease;
+  }
+  .character-card:hover,
+  .guess-card:hover{transform:translateY(-2px)}
+  .character-card.selected{border-color:var(--purple)}
+  .guess-card.selected{border-color:var(--blue)}
+
+  .char-portrait{
+    aspect-ratio:1/1;
+    border-radius:18px;
+    background:linear-gradient(180deg,#f8fdff,#d8efff);
+    display:grid;
+    place-items:center;
+    box-shadow:inset 0 -5px 0 rgba(255,255,255,.6);
+    overflow:hidden;
+    position:relative;
+  }
+  .char-portrait .emoji{
+    font-size:76px;
+    transform:translateY(4px);
+  }
+  .char-name{
+    text-align:center;
+    margin-top:8px;
+    font-size:20px;
+    font-weight:1000;
+    color:#204c88;
+  }
+
+  .two-col{
+    display:grid;
+    grid-template-columns:1.08fr .92fr;
+    gap:14px;
+    margin-top:14px;
+  }
+
+  .panel-title{
+    margin:0 0 12px;
+    font-size:24px;
+    font-weight:1000;
+  }
+
+  .chip-wrap{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .select-chip, .select-btn, .mini-btn{
+    border:0;
+    border-radius:999px;
+    background:#edf1f7;
+    color:#35415a;
+    padding:11px 15px;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+  }
+  .select-chip.active,
+  .select-btn.active,
+  .mini-btn.active{
+    color:#fff;
+    background:linear-gradient(135deg,var(--purple),#6f40da);
+  }
+
+  .preview-card{
+    background:linear-gradient(135deg,#fff2f8,#f5edff);
+    position:relative;
+    overflow:hidden;
+  }
+  .preview-lines{
+    font-size:22px;
+    line-height:1.6;
+    font-weight:800;
+  }
+  .preview-buddy{
+    position:absolute;
+    right:12px;
+    bottom:8px;
+    font-size:90px;
+    opacity:.95;
+  }
+
+  .listen-row{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+    flex-wrap:wrap;
+  }
+
+  .btn{
+    border:0;
+    border-radius:16px;
+    padding:14px 18px;
+    font-size:17px;
+    font-weight:1000;
+    cursor:pointer;
+    box-shadow:0 8px 18px rgba(73,100,138,.15);
+  }
+  .btn-blue{color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue-2))}
+  .btn-green{color:#fff;background:linear-gradient(135deg,var(--green),var(--green-2))}
+  .btn-purple{color:#fff;background:linear-gradient(135deg,var(--purple),#6940d8)}
+  .btn-yellow{color:#523800;background:linear-gradient(135deg,#ffd25f,#ffbf33)}
+  .btn-ghost{background:#fff;color:#365178;border:2px solid var(--line)}
+
+  .bubble{
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:24px;
+    padding:18px;
+    font-size:22px;
+    font-weight:800;
+    line-height:1.6;
+    position:relative;
+  }
+  .bubble:before{
+    content:"🔊";
+    position:absolute;
+    left:-12px;
+    top:16px;
+    width:44px;height:44px;border-radius:50%;
+    background:#dff1ff;
+    display:grid;place-items:center;
+    box-shadow:0 8px 18px rgba(64,101,142,.12);
+  }
+
+  .guess-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-top:14px;
+  }
+  .result-box{
+    display:none;
+    margin-top:12px;
+    padding:14px 16px;
+    border-radius:18px;
+    font-weight:1000;
+    font-size:18px;
+  }
+  .result-box.show{display:block}
+  .result-ok{background:#e7f9ec;color:#1b7c3d}
+  .result-no{background:#fff1f1;color:#b64646}
+
+  .builder{
+    display:grid;
+    grid-template-columns:.9fr 1.1fr;
+    gap:16px;
+  }
+  .hero-box{
+    min-height:332px;
+    background:linear-gradient(180deg,#eff8ff,#fff0f8);
+    border-radius:24px;
+    display:grid;
+    place-items:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-box:before{
+    content:"";
+    position:absolute;
+    bottom:-50px; left:-20px;
+    width:120%; height:120px;
+    background:radial-gradient(circle at 20% 30%, #a6dc7c 0 25%, transparent 26%),
+               radial-gradient(circle at 60% 40%, #8fd967 0 22%, transparent 23%),
+               radial-gradient(circle at 80% 20%, #8dd15c 0 28%, transparent 29%);
+    opacity:.26;
+  }
+  .big-char{
+    font-size:170px;
+    filter:drop-shadow(0 12px 15px rgba(0,0,0,.08));
+  }
+  .speech-sticker{
+    position:absolute;
+    left:14px; top:18px;
+    background:#fffef6;
+    border-radius:16px;
+    padding:12px 14px;
+    font-weight:1000;
+    color:#5d5572;
+    box-shadow:0 10px 20px rgba(0,0,0,.08);
+    transform:rotate(-3deg);
+  }
+
+  .tab-row{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+  }
+  .tab-row .tab{
+    border:0;
+    border-radius:13px;
+    padding:10px 14px;
+    background:#edf2f9;
+    font-size:16px;
+    font-weight:1000;
+    color:#3b4662;
+  }
+  .tab.active{background:linear-gradient(135deg,#a17cff,#7d55eb);color:#fff}
+
+  .subhead{
+    margin:2px 0 8px;
+    font-size:18px;
+    font-weight:1000;
+  }
+  .option-line{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:12px;
+  }
+
+  .dot-btn{
+    border:3px solid transparent;
+    width:48px;height:48px;border-radius:50%;
+    cursor:pointer;
+    box-shadow:inset 0 0 0 3px rgba(255,255,255,.65);
+  }
+  .dot-btn.active{border-color:var(--purple)}
+
+  .poem-card{
+    margin-top:12px;
+    background:#f7fbff;
+    border:2px solid #e6eef8;
+    border-radius:22px;
+    padding:16px;
+  }
+  .poem-title{
+    margin:0 0 10px;
+    font-size:24px;
+    font-weight:1000;
+    color:#245eae;
+  }
+  textarea{
+    width:100%;
+    min-height:152px;
+    resize:vertical;
+    border:0;
+    outline:none;
+    background:transparent;
+    font-size:19px;
+    line-height:1.7;
+    font-weight:800;
+    color:var(--ink);
+    font-family:"Segoe UI",Arial,sans-serif;
+  }
+
+  .share-area{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+  .final-poem{
+    background:linear-gradient(135deg,#fff,#fff4f8);
+    border:2px dashed #f2bdd1;
+    border-radius:24px;
+    padding:18px;
+    min-height:250px;
+    font-size:20px;
+    line-height:1.72;
+    white-space:pre-wrap;
+    font-weight:800;
+  }
+  .share-card{
+    background:#f7fbff;
+    border:2px solid #e7eef7;
+    border-radius:24px;
+    padding:16px;
+  }
+  .share-card h3{
+    margin:0 0 8px;
+    font-size:24px;
+    color:#ef4d8e;
+  }
+  .share-card p{
+    margin:0;
+    color:var(--muted);
+    font-weight:800;
+    line-height:1.6;
+  }
+  .share-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:12px;
+  }
+  .input-row{
+    margin-bottom:10px;
+  }
+  .input-row label{
+    display:block;
+    font-weight:1000;
+    margin-bottom:7px;
+  }
+  input[type="text"]{
+    width:100%;
+    border:2px solid var(--line);
+    border-radius:16px;
+    padding:13px 14px;
+    font-size:17px;
+    font-weight:800;
+    color:var(--ink);
+    outline:none;
+    background:#fff;
+  }
+  input[type="text"]:focus{
+    border-color:#a7cfff;
+    box-shadow:0 0 0 5px rgba(73,145,255,.12);
+  }
+
+  .footer-slogan{
+    width:fit-content;
+    margin:18px auto 0;
+    background:rgba(255,255,255,.88);
+    border-radius:999px;
+    padding:11px 18px;
+    box-shadow:var(--shadow);
+    font-weight:1000;
+    font-size:18px;
+  }
+
+  .toast{
+    position:fixed;
+    left:50%; bottom:22px;
+    transform:translateX(-50%) translateY(20px);
+    background:#25334e;
+    color:#fff;
+    padding:13px 18px;
+    border-radius:14px;
+    font-weight:1000;
+    box-shadow:0 12px 24px rgba(0,0,0,.18);
+    opacity:0;
+    pointer-events:none;
+    transition:.24s ease;
+    z-index:30;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .decor-note{
+    display:inline-block;
+    margin-left:8px;
+    font-size:14px;
+    color:#7d69c8;
+    font-weight:900;
+  }
+
+  @media (max-width:1120px){
+    .grid{grid-template-columns:1fr}
+  }
+
+  @media (max-width:840px){
+    header{flex-direction:column}
+    .header-right{justify-content:flex-start}
+    .character-grid{grid-template-columns:repeat(2,1fr)}
+    .guess-grid{grid-template-columns:repeat(2,1fr)}
+    .two-col,.builder{grid-template-columns:1fr}
+  }
+
+  @media (max-width:560px){
+    .app{padding:12px 12px 26px}
+    .lesson-badge{display:none}
+    .main-title{font-size:42px}
+    .step-header h2{font-size:28px}
+    .step-chip{font-size:22px}
+    .char-name{font-size:18px}
+    .preview-lines,.bubble,.final-poem,textarea{font-size:18px}
+    .header-left{align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+  <div class="bg-cloud cloud1">☁️</div>
+  <div class="bg-cloud cloud2">☁️</div>
+  <div class="bg-cloud cloud3">☁️</div>
+
+  <div class="app">
+    <header>
+      <div class="header-left">
+        <div class="lesson-badge">
+          <div class="small">Lesson 6</div>
+          <div class="big">Project</div>
+        </div>
+        <div class="title-wrap">
+          <h1 class="main-title"><span class="t1">All</span> <span class="t2">Are</span> <span class="t3">Beautiful</span></h1>
+          <div class="sub-title">외모를 설명하고, 시를 바꿔 쓰는 활동</div>
+          <div class="motto">💜 Be You · Be Kind · Be Beautiful!</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="top-btn" onclick="resetAll()">🏠 처음으로</button>
+        <button class="top-btn" onclick="openBoard()">📝 보드 열기</button>
+        <div class="avatar-bubble">👧</div>
+      </div>
+    </header>
+
+    <div class="progress">
+      <button class="active" onclick="moveTo('step1', this)">1. Look & Choose</button>
+      <button onclick="moveTo('step2', this)">2. Guess Who?</button>
+      <button onclick="moveTo('step3', this)">3. Make My Character</button>
+      <button onclick="moveTo('step4', this)">4. Our Group Poem</button>
+    </div>
+
+    <div class="grid">
+      <section class="card" id="step1">
+        <div class="step-header">
+          <div class="step-chip chip-1">Step 1</div>
+          <div>
+            <h2>Look & Choose</h2>
+            <p>친구를 선택하고, 외모를 나타내는 말을 골라 보세요.</p>
+          </div>
+        </div>
+
+        <div class="character-grid" id="characterGrid"></div>
+
+        <div class="two-col">
+          <div class="soft-panel">
+            <h3 class="panel-title">Choose the appearance!</h3>
+            <div class="chip-wrap" id="featureChips"></div>
+          </div>
+
+          <div class="soft-panel preview-card">
+            <h3 class="panel-title">💗 Sentence Preview</h3>
+            <div class="preview-lines" id="previewText"></div>
+            <div class="listen-row">
+              <button class="btn btn-ghost" onclick="speakText(document.getElementById('previewText').innerText)">🔊 들어보기</button>
+            </div>
+            <div class="preview-buddy" id="previewEmoji">👧🏻</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="step2">
+        <div class="step-header">
+          <div class="step-chip chip-2">Step 2</div>
+          <div>
+            <h2>Guess Who?</h2>
+            <p>설명을 읽거나 듣고, 알맞은 캐릭터를 골라 보세요.</p>
+          </div>
+        </div>
+
+        <div class="bubble" id="guessText"></div>
+        <div class="listen-row">
+          <button class="btn btn-ghost" onclick="speakText(currentGuess.text)">🔊 문장 듣기</button>
+          <button class="btn btn-yellow" onclick="newGuess()">🔄 새 문제</button>
+        </div>
+
+        <div class="guess-grid" id="guessGrid"></div>
+
+        <div class="listen-row">
+          <button class="btn btn-blue" onclick="checkGuess()">⭐ 정답 확인</button>
+        </div>
+        <div id="guessResult" class="result-box"></div>
+      </section>
+
+      <section class="card" id="step3">
+        <div class="step-header">
+          <div class="step-chip chip-3">Step 3</div>
+          <div>
+            <h2>Make My Character</h2>
+            <p>나만의 캐릭터를 만들고, 시를 완성해 보세요.</p>
+          </div>
+        </div>
+
+        <div class="builder">
+          <div class="hero-box">
+            <div class="speech-sticker">It’s me!<br>I love all of me! 💗</div>
+            <div class="big-char" id="builderEmoji">👧🏻</div>
+          </div>
+
+          <div>
+            <div class="tab-row">
+              <button class="tab active" type="button">Hair</button>
+              <button class="tab" type="button">Eyes</button>
+              <button class="tab" type="button">Glasses</button>
+              <button class="tab" type="button">Style</button>
+            </div>
+
+            <div class="soft-panel">
+              <div class="subhead">Hair</div>
+              <div class="option-line" id="hairLine"></div>
+
+              <div class="subhead">Hair color</div>
+              <div class="option-line" id="hairColorLine"></div>
+
+              <div class="subhead">Eyes</div>
+              <div class="option-line" id="eyesLine"></div>
+
+              <div class="subhead">Glasses</div>
+              <div class="option-line" id="glassesLine"></div>
+
+              <div class="subhead">Character style</div>
+              <div class="option-line" id="styleLine"></div>
+            </div>
+
+            <div class="poem-card">
+              <h3 class="poem-title">✏️ My Poem</h3>
+              <textarea id="myPoem"></textarea>
+              <div class="listen-row">
+                <button class="btn btn-blue" onclick="makePoem()">✨ 시 만들기</button>
+                <button class="btn btn-ghost" onclick="speakText(document.getElementById('myPoem').value)">🔊 읽어보기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="step4">
+        <div class="step-header">
+          <div class="step-chip chip-4">Step 4</div>
+          <div>
+            <h2>Our Group Poem</h2>
+            <p>완성한 작품을 복사해서 보드에 올려 보세요.</p>
+          </div>
+        </div>
+
+        <div class="share-area">
+          <div class="share-card">
+            <div class="input-row">
+              <label for="studentName">이름 또는 닉네임 <span class="decor-note">실명 대신 닉네임 사용 가능</span></label>
+              <input id="studentName" type="text" placeholder="예: Sky, 민지, Blue Star">
+            </div>
+          </div>
+
+          <div class="final-poem" id="finalPoem"></div>
+
+          <div class="share-card">
+            <h3>📌 완성한 작품을 친구들과 함께 나눠요!</h3>
+            <p>1) 작품 복사하기 → 2) 보드 열기 → 3) 보드 글쓰기 칸에 붙여넣기</p>
+            <div class="share-row">
+              <button class="btn btn-blue" onclick="copyPoem()">📋 완성 작품 복사하기</button>
+              <button class="btn btn-green" onclick="openBoard()">↗ 보드 열기</button>
+              <button class="btn btn-purple" onclick="speakText(document.getElementById('finalPoem').innerText)">🎵 함께 읽기</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer-slogan">🌈 All are good. All are beautiful.</div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+const BOARD_URL = "https://b.tkbell.co.kr/tkboard/woi/1152945/4gPb4e1jJ7.do?pageSeq=2568266";
+
+const people = [
+  {name:"Anna", emoji:"👧🏻", hair:"long hair", eyes:"green eyes", glasses:true, tall:false},
+  {name:"Peter", emoji:"👦🏼", hair:"short hair", eyes:"blue eyes", glasses:true, tall:true},
+  {name:"Jane", emoji:"👧🏻", hair:"short hair", eyes:"brown eyes", glasses:false, tall:false},
+  {name:"Daniel", emoji:"🧒🏻", hair:"long hair", eyes:"brown eyes", glasses:false, tall:true},
+  {name:"Minji", emoji:"👧🏻", hair:"short hair", eyes:"brown eyes", glasses:false, tall:false}
+];
+
+const featureList = ["tall","short","long hair","short hair","brown eyes","blue eyes","green eyes","glasses"];
+
+let selectedCharacter = 0;
+let selectedFeatures = new Set(["long hair","green eyes","glasses"]);
+let currentGuess = { answer: 1, text: "" };
+let chosenGuess = null;
+
+const buildState = {
+  hair: "long hair",
+  hairColor: "black",
+  eyes: "brown eyes",
+  glasses: "green glasses",
+  style: "cute",
+  emoji: "👧🏻"
+};
+
+function saveState(){
+  const state = {
+    selectedCharacter,
+    selectedFeatures: [...selectedFeatures],
+    buildState,
+    studentName: document.getElementById("studentName")?.value || "",
+    myPoem: document.getElementById("myPoem")?.value || ""
+  };
+  localStorage.setItem("allAreBeautifulApp", JSON.stringify(state));
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem("allAreBeautifulApp");
+    if(!raw) return;
+    const state = JSON.parse(raw);
+    if(typeof state.selectedCharacter === "number") selectedCharacter = state.selectedCharacter;
+    if(Array.isArray(state.selectedFeatures)) selectedFeatures = new Set(state.selectedFeatures);
+    if(state.buildState) Object.assign(buildState, state.buildState);
+    setTimeout(()=>{
+      if(state.studentName) document.getElementById("studentName").value = state.studentName;
+      if(state.myPoem) document.getElementById("myPoem").value = state.myPoem;
+      makeFinalPoem();
+    }, 0);
+  }catch(e){}
+}
+
+function renderCharacters(){
+  const wrap = document.getElementById("characterGrid");
+  wrap.innerHTML = "";
+  people.forEach((person, index) => {
+    const btn = document.createElement("button");
+    btn.className = "character-card" + (selectedCharacter === index ? " selected" : "");
+    btn.innerHTML = `
+      <div class="char-portrait"><div class="emoji">${person.emoji}</div></div>
+      <div class="char-name">${person.name}</div>
+    `;
+    btn.onclick = () => {
+      selectedCharacter = index;
+      const base = [];
+      base.push(person.tall ? "tall" : "short");
+      base.push(person.hair);
+      base.push(person.eyes);
+      if(person.glasses) base.push("glasses");
+      selectedFeatures = new Set(base);
+      renderCharacters();
+      renderFeatureChips();
+      updatePreview();
+      saveState();
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+function renderFeatureChips(){
+  const wrap = document.getElementById("featureChips");
+  wrap.innerHTML = "";
+  featureList.forEach(feature => {
+    const chip = document.createElement("button");
+    chip.className = "select-chip" + (selectedFeatures.has(feature) ? " active" : "");
+    chip.textContent = feature;
+    chip.onclick = () => {
+      if(selectedFeatures.has(feature)) selectedFeatures.delete(feature);
+      else selectedFeatures.add(feature);
+
+      if(feature === "tall") selectedFeatures.delete("short");
+      if(feature === "short") selectedFeatures.delete("tall");
+      if(feature === "long hair") selectedFeatures.delete("short hair");
+      if(feature === "short hair") selectedFeatures.delete("long hair");
+      if(["brown eyes","blue eyes","green eyes"].includes(feature)){
+        ["brown eyes","blue eyes","green eyes"].forEach(v => { if(v !== feature) selectedFeatures.delete(v); });
+      }
+
+      renderFeatureChips();
+      updatePreview();
+      saveState();
+    };
+    wrap.appendChild(chip);
+  });
+}
+
+function updatePreview(){
+  const person = people[selectedCharacter];
+  const pron = (person.name === "Peter" || person.name === "Daniel") ? "He" : "She";
+  const lines = [];
+
+  if(selectedFeatures.has("tall")) lines.push(`${pron} is tall.`);
+  if(selectedFeatures.has("short")) lines.push(`${pron} is short.`);
+  if(selectedFeatures.has("long hair")) lines.push(`${pron} has long hair.`);
+  if(selectedFeatures.has("short hair")) lines.push(`${pron} has short hair.`);
+  if(selectedFeatures.has("brown eyes")) lines.push(`${pron} has brown eyes.`);
+  if(selectedFeatures.has("blue eyes")) lines.push(`${pron} has blue eyes.`);
+  if(selectedFeatures.has("green eyes")) lines.push(`${pron} has green eyes.`);
+  if(selectedFeatures.has("glasses")) lines.push(`${pron} is wearing glasses.`);
+
+  document.getElementById("previewText").innerHTML = lines.length ? lines.join("<br>") : "Choose some words!";
+  document.getElementById("previewEmoji").textContent = person.emoji;
+}
+
+function makeGuessSentence(person){
+  const pron = (person.name === "Peter" || person.name === "Daniel") ? "He" : "She";
+  return `${pron} has ${person.eyes} and ${person.hair}. ${pron} is ${person.tall ? "tall" : "short"}. ${person.glasses ? pron + " is wearing glasses. " : ""}Who is ${pron.toLowerCase()}?`;
+}
+
+function newGuess(){
+  const answer = Math.floor(Math.random() * 4);
+  currentGuess = { answer, text: makeGuessSentence(people[answer]) };
+  chosenGuess = null;
+  document.getElementById("guessText").textContent = currentGuess.text;
+  const result = document.getElementById("guessResult");
+  result.className = "result-box";
+  renderGuessCards();
+}
+
+function renderGuessCards(){
+  const wrap = document.getElementById("guessGrid");
+  wrap.innerHTML = "";
+  people.slice(0,4).forEach((person, index) => {
+    const btn = document.createElement("button");
+    btn.className = "guess-card" + (chosenGuess === index ? " selected" : "");
+    btn.innerHTML = `
+      <div class="char-portrait"><div class="emoji">${person.emoji}</div></div>
+      <div class="char-name">${person.name}</div>
+    `;
+    btn.onclick = () => {
+      chosenGuess = index;
+      renderGuessCards();
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+function checkGuess(){
+  const result = document.getElementById("guessResult");
+  if(chosenGuess === null){
+    result.className = "result-box show result-no";
+    result.textContent = "먼저 캐릭터를 골라 주세요.";
+    return;
+  }
+  if(chosenGuess === currentGuess.answer){
+    result.className = "result-box show result-ok";
+    result.textContent = `Nice! That's ${people[currentGuess.answer].name}!`;
+  }else{
+    result.className = "result-box show result-no";
+    result.textContent = "Try again! 문장을 다시 읽고 다시 골라 보세요.";
+  }
+}
+
+function renderBuilderOptions(){
+  const hairChoices = ["long hair","short hair","curly hair","straight hair"];
+  const eyeChoices = ["brown eyes","blue eyes","green eyes"];
+  const glassesChoices = ["no glasses","green glasses","blue glasses","red glasses"];
+  const styleChoices = [
+    {label:"cute", emoji:"👧🏻"},
+    {label:"happy", emoji:"😄"},
+    {label:"cool", emoji:"😎"},
+    {label:"shy", emoji:"😊"}
+  ];
+  const hairColorChoices = [
+    {name:"black", color:"#2b241f"},
+    {name:"brown", color:"#6e4324"},
+    {name:"red", color:"#ca622f"},
+    {name:"blond", color:"#e7bf58"}
+  ];
+
+  createTextButtons("hairLine", hairChoices, buildState.hair, value => {
+    buildState.hair = value;
+    updateBuilderEmoji();
+    makePoem();
+  });
+
+  createTextButtons("eyesLine", eyeChoices, buildState.eyes, value => {
+    buildState.eyes = value;
+    makePoem();
+  });
+
+  createTextButtons("glassesLine", glassesChoices, buildState.glasses, value => {
+    buildState.glasses = value;
+    makePoem();
+  });
+
+  const styleWrap = document.getElementById("styleLine");
+  styleWrap.innerHTML = "";
+  styleChoices.forEach(item => {
+    const btn = document.createElement("button");
+    btn.className = "mini-btn" + (buildState.style === item.label ? " active" : "");
+    btn.innerHTML = `${item.emoji} ${item.label}`;
+    btn.onclick = () => {
+      buildState.style = item.label;
+      buildState.emoji = item.emoji;
+      updateBuilderEmoji();
+      renderBuilderOptions();
+      makePoem();
+    };
+    styleWrap.appendChild(btn);
+  });
+
+  const colorWrap = document.getElementById("hairColorLine");
+  colorWrap.innerHTML = "";
+  hairColorChoices.forEach(item => {
+    const btn = document.createElement("button");
+    btn.className = "dot-btn" + (buildState.hairColor === item.name ? " active" : "");
+    btn.style.background = item.color;
+    btn.title = item.name;
+    btn.onclick = () => {
+      buildState.hairColor = item.name;
+      renderBuilderOptions();
+      makePoem();
+    };
+    colorWrap.appendChild(btn);
+  });
+}
+
+function createTextButtons(targetId, arr, activeValue, onClickFn){
+  const wrap = document.getElementById(targetId);
+  wrap.innerHTML = "";
+  arr.forEach(value => {
+    const btn = document.createElement("button");
+    btn.className = "mini-btn" + (activeValue === value ? " active" : "");
+    btn.textContent = value;
+    btn.onclick = () => {
+      onClickFn(value);
+      renderBuilderOptions();
+      saveState();
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+function updateBuilderEmoji(){
+  document.getElementById("builderEmoji").textContent = buildState.emoji;
+}
+
+function makePoem(){
+  let lines = [];
+  lines.push(`I have ${buildState.eyes} and ${buildState.hairColor} ${buildState.hair}.`);
+  if(buildState.glasses !== "no glasses"){
+    lines.push(`I'm wearing ${buildState.glasses}.`);
+  }
+  lines.push("");
+  lines.push("It's me. I love all of me!");
+
+  document.getElementById("myPoem").value = lines.join("\n");
+  makeFinalPoem();
+  saveState();
+}
+
+function makeFinalPoem(){
+  const name = (document.getElementById("studentName").value || "").trim() || "My Character";
+  const poem = (document.getElementById("myPoem").value || "").trim();
+  document.getElementById("finalPoem").textContent =
+`${name}'s Poem
+
+${poem}
+
+We don't look the same.
+All are good. All are beautiful.`;
+  saveState();
+}
+
+async function copyPoem(){
+  makeFinalPoem();
+  const text = document.getElementById("finalPoem").innerText;
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch(e){
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+  }
+  showToast("📋 완성 작품을 복사했어요!");
+}
+
+function openBoard(){
+  window.open(BOARD_URL, "_blank", "noopener,noreferrer");
+}
+
+function speakText(text){
+  if(!("speechSynthesis" in window)){
+    showToast("이 브라우저는 음성 읽기를 지원하지 않아요.");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "en-US";
+  utter.rate = 0.82;
+  utter.pitch = 1.02;
+  speechSynthesis.speak(utter);
+}
+
+function showToast(msg){
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 1800);
+}
+
+function moveTo(id, btn){
+  document.getElementById(id).scrollIntoView({behavior:"smooth", block:"start"});
+  document.querySelectorAll(".progress button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+function resetAll(){
+  selectedCharacter = 0;
+  selectedFeatures = new Set(["long hair","green eyes","glasses"]);
+  buildState.hair = "long hair";
+  buildState.hairColor = "black";
+  buildState.eyes = "brown eyes";
+  buildState.glasses = "green glasses";
+  buildState.style = "cute";
+  buildState.emoji = "👧🏻";
+  document.getElementById("studentName").value = "";
+  renderCharacters();
+  renderFeatureChips();
+  updatePreview();
+  renderBuilderOptions();
+  updateBuilderEmoji();
+  makePoem();
+  newGuess();
+  window.scrollTo({top:0, behavior:"smooth"});
+  localStorage.removeItem("allAreBeautifulApp");
+  showToast("처음 화면으로 돌아왔어요.");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderCharacters();
+  renderFeatureChips();
+  updatePreview();
+  renderBuilderOptions();
+  updateBuilderEmoji();
+  newGuess();
+  makePoem();
+  loadState();
+  document.getElementById("studentName").addEventListener("input", makeFinalPoem);
+  document.getElementById("myPoem").addEventListener("input", makeFinalPoem);
+});
+</script>
+</body>
+</html>

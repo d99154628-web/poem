@@ -27,6 +27,32 @@ textarea{width:100%;min-height:180px;border:0;outline:none;background:transparen
 .final{background:linear-gradient(135deg,#fff,#fff4f8);border-style:dashed;border-color:#f2bdd1;white-space:pre-wrap;font-size:19px;line-height:1.7;font-weight:800}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:#25334e;color:#fff;padding:12px 16px;border-radius:13px;font-weight:900;opacity:0;transition:.2s;z-index:20} .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(max-width:1000px){.builder,.finalwrap{grid-template-columns:1fr}} @media(max-width:760px){header{align-items:flex-start;flex-direction:column}.chooser{grid-template-columns:repeat(2,1fr)}}
+
+.nickname-modal{
+  position:fixed; inset:0; background:rgba(36,45,70,.42);
+  display:none; align-items:center; justify-content:center;
+  z-index:9999; padding:20px;
+}
+.nickname-modal.show{display:flex}
+.nickname-box{
+  width:min(520px,92vw); background:#fff; border-radius:24px;
+  padding:22px; box-shadow:0 22px 60px rgba(0,0,0,.22);
+  border:2px solid #e7eef7;
+}
+.nickname-box h3{margin:0 0 10px;font-size:25px;color:#7d57eb}
+.nickname-box p{margin:0;color:#58627b;font-weight:800;line-height:1.65}
+.nickname-alert{
+  margin-top:14px; background:#fff7e8; border:2px dashed #ffd58a;
+  border-radius:16px; padding:12px 14px; color:#735822; font-weight:900; line-height:1.55;
+}
+.nickname-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.nickname-actions button{
+  flex:1; min-width:160px; border:0; border-radius:14px;
+  padding:13px 16px; font-weight:1000; cursor:pointer;
+}
+.nickname-cancel{background:#edf1f7;color:#43506a}
+.nickname-go{background:linear-gradient(135deg,#37b663,#249148);color:#fff}
+
 </style>
 </head>
 <body>
@@ -59,7 +85,23 @@ textarea{width:100%;min-height:180px;border:0;outline:none;background:transparen
 <div class="panel"><div class="finalwrap"><div class="studentcard"><div id="finalVisual"></div><div class="name" id="finalName">My Friend</div></div><div class="final" id="finalPoem"></div></div>
 <div class="actions"><button class="btn blue" onclick="copyArtwork()">🖼️ 그림+시 복사</button><button class="btn green" onclick="copyAndOpenBoard()">📋 복사하고 보드 열기</button><button class="btn purple" onclick="speak(document.getElementById('finalPoem').innerText)">🎵 함께 읽기</button></div><div style="margin-top:10px;color:#6f7993;font-weight:800;line-height:1.55">※ <b>복사하고 보드 열기</b>를 누르면 캐릭터(또는 업로드한 사진)+시를 한 장의 이미지로 복사한 뒤 보드를 엽니다. 보드에서 <b>Ctrl+V</b>로 붙여넣으세요.</div></div></div>
 </section>
-</div><div class="toast" id="toast"></div>
+</div>
+<div class="nickname-modal" id="nicknameModal" aria-hidden="true">
+  <div class="nickname-box">
+    <h3>📝 띵커벨 닉네임을 확인해 주세요</h3>
+    <p>앞 반 학생이 사용한 이름이 그대로 보일 수 있어요.</p>
+    <div class="nickname-alert">
+      띵커벨에 들어간 뒤 이전 이름이 보이면 지우고,<br>
+      지금 사용하는 <b>자기 닉네임</b>으로 바꿔 주세요.
+    </div>
+    <div class="nickname-actions">
+      <button class="nickname-cancel" onclick="closeNicknameModal()">취소</button>
+      <button class="nickname-go" onclick="confirmOpenBoard()">확인하고 보드 열기 ↗</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const BOARD_URL="https://b.tkbell.co.kr/tkboard/woi/1152945/4gPb4e1jJ7.do?pageSeq=2568266";
@@ -73,7 +115,31 @@ function pos(id){const i=id-1,c=i%5,r=Math.floor(i/5);return `${c*25}% ${r*20}%`
 function sprite(id){return `<div class="sprite" style="background-position:${pos(id)}"></div>`}
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)}
 function speak(text){if(!("speechSynthesis" in window))return toast("음성 읽기를 지원하지 않아요.");speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=.83;speechSynthesis.speak(u)}
-function openBoard(){window.open(BOARD_URL,"_blank","noopener,noreferrer")}
+
+let pendingBoardOpen=false;
+
+function openBoard(){
+  pendingBoardOpen=true;
+  const modal=document.getElementById("nicknameModal");
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden","false");
+}
+
+function closeNicknameModal(){
+  pendingBoardOpen=false;
+  const modal=document.getElementById("nicknameModal");
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden","true");
+}
+
+function confirmOpenBoard(){
+  const modal=document.getElementById("nicknameModal");
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden","true");
+  pendingBoardOpen=false;
+  window.open(BOARD_URL,"_blank","noopener,noreferrer");
+}
+
 function list(){if(filter==="all")return AVATARS;if(filter==="girl"||filter==="boy")return AVATARS.filter(a=>a.gender===filter);if(filter==="glasses")return AVATARS.filter(a=>a.accessory.includes("glasses"));return AVATARS}
 function renderChooser(){const box=document.getElementById("chooser");box.innerHTML="";list().forEach(a=>{const b=document.createElement("button");b.className="pick"+(selectedAvatar===a.id?" sel":"");b.innerHTML=sprite(a.id)+`<div class="name">${a.id}</div>`;b.onclick=()=>{selectedAvatar=a.id;syncFromAvatar();renderChooser();renderHero();renderChips();makePoem()};box.appendChild(b)})}
 function renderHero(){document.getElementById("heroSprite").innerHTML=sprite(selectedAvatar)}
@@ -221,5 +287,14 @@ document.addEventListener("DOMContentLoaded",()=>{renderChooser();renderHero();r
  document.getElementById("imageUpload").addEventListener("change",e=>{const file=e.target.files&&e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{uploadedDataUrl=reader.result;document.getElementById("uploadedPreview").innerHTML=`<img src="${uploadedDataUrl}" alt="uploaded image">`;mode="upload";document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.mode==="upload"));document.getElementById("characterMode").classList.remove("active");document.getElementById("uploadMode").classList.add("active");updateFinal()};reader.readAsDataURL(file)});
  document.getElementById("personName").addEventListener("input",updateFinal);document.getElementById("poem").addEventListener("input",updateFinal)
 })
+
+document.addEventListener("click",(e)=>{
+  const modal=document.getElementById("nicknameModal");
+  if(e.target===modal) closeNicknameModal();
+});
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="Escape") closeNicknameModal();
+});
+
 </script>
 </body></html>
